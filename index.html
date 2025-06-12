@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>胰腺炎科普消消乐</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>胰腺炎科普消消乐</h1>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <div class="score-level-info">
+                    <p>关卡: <span id="current-level">1</span></p>
+                    <p>目标分数: <span id="target-score">0</span></p>
+                    <p>当前分数: <span id="current-score">0</span></p>
+                </div>
+                <div id="game-board"></div>
+                <button id="reset-level-button" style="display: none;">重新开始本关</button>
+            </div>
+
+            <div id="info-modal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close-button" onclick="closeInfoModal()">&times;</span>
+                    <h2>胰腺炎小知识</h2>
+                    <p id="info-text"></p>
+                    <button id="start-quiz-button">开始答题</button>
+                </div>
+            </div>
+
+            <div id="quiz-modal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close-button" onclick="closeQuizModal()">&times;</span>
+                    <h2 id="quiz-question-title">健康知识问答</h2>
+                    <p id="quiz-question"></p>
+                    <div id="quiz-options"></div>
+                    <p id="quiz-feedback"></p>
+                    <button id="next-question-button" style="display:none;">下一题/进入下一关</button>
+                </div>
+            </div>
+
+            <div id="game-complete-modal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <h2>恭喜通关！</h2>
+                    <p>您已成功完成所有关卡，掌握了许多关于胰腺炎的知识！</p>
+                    <button onclick="restartGame()">重新开始游戏</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>|浙一肝胆胰外科| 游戏仅为科普目的，不能替代专业医疗建议。</p>
+        </footer>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

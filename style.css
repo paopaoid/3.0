@@ -1,94 +1,322 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* Allow header/footer and main content to stack */
+    justify-content: flex-start; /* Align items to the start */
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
+    background-color: #e6f7ff; /* Lighter background */
     color: #333;
+    padding: 10px; /* Add some padding for smaller screens */
+    box-sizing: border-box;
 }
 
 .container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     text-align: center;
-    width: 90%;
-    max-width: 800px;
+    width: 100%;
+    max-width: 900px; /* Increased max-width */
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 header h1 {
-    color: #007bff;
-    margin-bottom: 20px;
+    color: #0056b3; /* Darker blue for better contrast */
+    margin-bottom: 25px;
+    font-size: 2em; /* Larger title */
 }
 
 .game-area {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    width: 100%;
+    display: flex; /* Use flex to center the game board if it's smaller than game-area */
+    flex-direction: column;
+    align-items: center; /* Center game board horizontally */
 }
 
 .score-level-info {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 15px;
-    font-size: 1.1em;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 1.2em; /* Slightly larger score info */
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+.score-level-info p {
+    margin: 5px 10px;
 }
 
 #game-board {
     display: grid;
-    grid-template-columns: repeat(8, 50px); /* 默认8x8网格，可由JS调整 */
-    grid-template-rows: repeat(8, 50px);
-    gap: 5px;
-    justify-content: center;
-    margin: 20px auto;
-    border: 2px solid #ccc;
-    padding: 5px;
-    background-color: #e9e9e9;
-    width: fit-content;
+    /* grid-template-columns and rows will be set by JS */
+    gap: clamp(2px, 0.8vw, 4px); /* Slightly smaller gap for smaller cells */
+    justify-content: center; /* Horizontally center grid items if grid itself is wider */
+    align-content: center; /* Vertically center grid items */
+    margin: 15px auto; /* Center the board within its parent */
+    border: 2px solid #b0d8ff;
+    padding: clamp(4px, 1vw, 8px); /* Slightly smaller padding */
+    background-color: #d9efff;
+    /* width and height will be set by JS */
+    max-width: 95vw; /* Max width relative to viewport width */
+    max-height: 70vh; /* Max height relative to viewport height, to ensure visibility */
+    /* aspect-ratio: 1 / 1; /* Let JS handle dimensions for better control */
+    box-sizing: border-box; /* Ensure padding and border are included in width/height */
 }
 
 .game-cell {
-    width: 50px;
-    height: 50px;
+    /* width and height will be set by JS for responsiveness */
     border-radius: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5em;
+    font-size: clamp(1.2em, 5vw, 2.2em); /* Adjusted font size for emoji icons */
     cursor: pointer;
-    transition: transform 0.2s ease, opacity 0.3s ease;
+    transition: transform 0.2s ease, opacity 0.3s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #f0f8ff; /* Light base color for cells */
+    text-align: center;
+    line-height: normal; /* Reset line-height if it was set for block centering */
+}
+
+.game-cell:hover {
+    transform: scale(1.05);
 }
 
 .game-cell.selected {
-    transform: scale(1.1);
-    box-shadow: 0 0 5px 2px gold;
+    transform: scale(1.15);
+    box-shadow: 0 0 8px 3px #ffcc00; /* Brighter gold */
 }
 
 .game-cell.hidden {
     opacity: 0;
     pointer-events: none;
+    background-color: transparent !important; /* Ensure hidden cells are truly invisible */
+    box-shadow: none;
 }
 
-/* 不同类型元素的颜色 */
-.type-0 { background-color: #ffadad; } /* 红 */
-.type-1 { background-color: #ffd6a5; } /* 橙 */
-.type-2 { background-color: #fdffb6; } /* 黄 */
-.type-3 { background-color: #caffbf; } /* 绿 */
-.type-4 { background-color: #9bf6ff; } /* 蓝 */
-.type-5 { background-color: #a0c4ff; } /* 靛 */
-.type-6 { background-color: #bdb2ff; } /* 紫 */
+/* 闪烁动画效果 */
+@keyframes hint-flash {
+    0% { transform: scale(1); box-shadow: 0 0 5px rgba(255, 255, 0, 0.5); }
+    50% { transform: scale(1.2); box-shadow: 0 0 15px rgba(255, 255, 0, 0.8); }
+    100% { transform: scale(1); box-shadow: 0 0 5px rgba(255, 255, 0, 0.5); }
+}
+
+@-webkit-keyframes hint-flash {
+    0% { transform: scale(1); box-shadow: 0 0 5px rgba(255, 255, 0, 0.5); }
+    50% { transform: scale(1.2); box-shadow: 0 0 15px rgba(255, 255, 0, 0.8); }
+    100% { transform: scale(1); box-shadow: 0 0 5px rgba(255, 255, 0, 0.5); }
+}
+
+.game-cell.hint {
+    animation: hint-flash 1s infinite;
+    -webkit-animation: hint-flash 1s infinite;
+    z-index: 10;
+}
+
+/* 洗牌按钮样式 */
+.shuffle-button {
+    padding: 8px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 5px;
+    transition: all 0.3s ease;
+}
+
+.shuffle-button:hover:not(.disabled) {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.shuffle-button.disabled {
+    background-color: #cccccc;
+    cursor: pointer; /* 允许点击以触发答题 */
+    opacity: 0.7;
+}
+
+/* 关卡过渡弹窗样式 */
+#level-transition-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.level-transition-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 500px;
+    width: 80%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s;
+}
+
+#transition-message {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 大拇指动画容器 */
+#thumbs-up-container {
+    margin: 20px auto;
+    width: 100px;
+    height: 100px;
+    position: relative;
+    display: block; /* 默认显示 */
+}
+
+.thumbs-up {
+    font-size: 80px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: thumbsUpAnimation 2s infinite;
+}
+
+@keyframes thumbsUpAnimation {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.3) rotate(10deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+/* 洗牌答题模态框样式 */
+#shuffle-quiz-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.shuffle-quiz-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 500px;
+    width: 80%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s;
+}
+
+#shuffle-quiz-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#shuffle-quiz-question {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#shuffle-quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#shuffle-quiz-options button {
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    font-size: 1.05em;
+    color: #333;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+#shuffle-quiz-options button:hover {
+    background-color: #e9e9e9;
+}
+
+#shuffle-quiz-options button.correct {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1em;
+    border: 3px solid #2E8B57;
+    box-shadow: 0 0 8px #4CAF50;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+#shuffle-quiz-options button.incorrect {
+    background-color: #f44336;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1em;
+    border: 3px solid #B22222;
+    box-shadow: 0 0 8px #f44336;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+#shuffle-quiz-feedback {
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+#shuffle-quiz-close-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+}
+
+/* Remove background color types, icons will be set by JS */
+.game-cell {
+    /* ... existing styles ... */
+    background-color: #f0f8ff; /* Light base color for cells */
+    /* Ensure text (emoji) is centered if that's the approach */
+    text-align: center;
+    line-height: normal; /* Reset line-height if it was set for block centering */
+}
+
+/* Optional: Add styles for specific animal icon types if needed, though JS will set content */
+/* Example: if using <img> or background-image with SVGs */
+/* .animal-type-0 { background-image: url('path/to/animal0.svg'); } */
 
 
 button {
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 12px 25px; /* Larger padding */
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 1em;
-    margin-top: 10px;
+    font-size: 1.05em;
+    margin-top: 15px;
+    transition: background-color 0.2s ease;
 }
 
 button:hover {
@@ -96,49 +324,68 @@ button:hover {
 }
 
 button:disabled {
-    background-color: #cccccc;
+    background-color: #b0bec5; /* Lighter grey for disabled */
     cursor: not-allowed;
 }
 
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    display: none; 
+    position: fixed; 
+    z-index: 1000; /* Higher z-index */
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    padding-top: 60px;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.5); /* Slightly darker overlay */
+    padding-top: 5vh; /* Use vh for vertical positioning */
+    align-items: center; /* Vertically center modal content */
+    justify-content: center; /* Horizontally center modal content */
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
-    border-radius: 8px;
+    background-color: #f8f9fa;
+    margin: auto; /* Centering */
+    padding: 25px;
+    border: 1px solid #ced4da;
+    width: 90%;
+    max-width: 650px; /* Slightly wider modal */
+    border-radius: 10px;
     text-align: left;
     position: relative;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+.modal-content h2 {
+    font-size: 1.8em; /* Larger modal titles */
+    color: #0056b3;
+    margin-bottom: 15px;
+}
+
+.modal-content p {
+    font-size: 1.2em; /* Larger font for科普content */
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+#info-text {
+    font-size: 1.3em; /* Specifically target info text */
+    line-height: 1.7;
 }
 
 .close-button {
-    color: #aaa;
+    color: #6c757d;
     float: right;
-    font-size: 28px;
+    font-size: 32px; /* Larger close button */
     font-weight: bold;
     position: absolute;
-    top: 10px;
-    right: 20px;
+    top: 15px;
+    right: 25px;
 }
 
 .close-button:hover,
 .close-button:focus {
-    color: black;
+    color: #343a40;
     text-decoration: none;
     cursor: pointer;
 }
@@ -146,7 +393,9 @@ button:disabled {
 #quiz-options button {
     display: block;
     width: calc(100% - 40px);
-    margin: 10px auto;
+    margin: 12px auto;
+    padding: 12px;
+    font-size: 1.1em;
     background-color: #6c757d;
 }
 
@@ -155,20 +404,181 @@ button:disabled {
 }
 
 #quiz-options button.correct {
-    background-color: #28a745; /* Green for correct */
+    background-color: #28a745; 
 }
 
 #quiz-options button.incorrect {
-    background-color: #dc3545; /* Red for incorrect */
+    background-color: #dc3545; 
 }
 
 #quiz-feedback {
-    margin-top: 15px;
+    margin-top: 20px;
     font-weight: bold;
+    font-size: 1.15em;
 }
 
 footer {
-    margin-top: 30px;
-    font-size: 0.9em;
-    color: #666;
+    margin-top: 40px;
+    font-size: 0.95em;
+    color: #495057;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+/* 花朵动画样式 */
+.flower-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.flower {
+    position: absolute;
+    top: -50px;
+    font-size: 24px;
+    animation: falling linear infinite;
+    opacity: 0.9;
+}
+
+/* 大拇指点赞样式 */
+.thumbs-up-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.thumbs-up {
+    font-size: 60px;
+    display: inline-block;
+    animation: thumbs-up-animation 1s infinite alternate;
+}
+
+@keyframes thumbs-up-animation {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.2) rotate(10deg); }
+}
+
+@keyframes falling {
+    0% {
+        transform: translateY(-50px) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(calc(100vh - 50px)) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* 音乐按钮样式 */
+.music-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border: none;
+    padding: 0;
+}
+
+.music-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.1);
+}
+
+/* 奖励信息样式 */
+.reward-message {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    border-left: 4px solid #28a745;
+}
+
+.reward-message p {
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+/* 响应式调整 - 游戏板和单元格的调整由JavaScript处理 */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+    
+    .score-level-info {
+        font-size: 0.95em;
+        flex-direction: column;
+        margin-bottom: 10px;
+    }
+    
+    .score-level-info p {
+        margin: 3px 0;
+    }
+    
+    .modal-content {
+        padding: 15px;
+        width: 95%;
+    }
+    
+    .modal-content p, #info-text {
+        font-size: 1.05em;
+    }
+    
+    .modal-content h2 {
+        font-size: 1.4em;
+    }
+    
+    button {
+        padding: 8px 16px;
+        font-size: 0.95em;
+        margin-top: 10px;
+    }
+    
+    #quiz-options button {
+        font-size: 0.95em;
+        padding: 8px;
+        margin: 8px auto;
+    }
+    
+    .close-button {
+        font-size: 28px;
+        top: 10px;
+        right: 15px;
+    }
+    
+    .flower {
+        font-size: 20px;
+    }
+    
+    .music-button {
+        width: 36px;
+        height: 36px;
+        bottom: 15px;
+        right: 15px;
+        font-size: 18px;
+    }
 }

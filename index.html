@@ -50,14 +50,46 @@
                     <button onclick="restartGame()">重新开始游戏</button>
                 </div>
             </div>
+            
+            <div id="level-transition-modal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <h2>关卡完成</h2>
+                    <p id="transition-message"></p>
+                    <div id="thumbs-up-container" style="display:none;">
+                        <div class="thumbs-up">👍</div>
+                    </div>
+                    <button id="continue-button">继续游戏</button>
+                </div>
+            </div>
+            
+            <div id="shuffle-quiz-modal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close-button" onclick="closeShuffleQuizModal()">&times;</span>
+                    <h2>🔄 洗牌道具题</h2>
+                    <p>回答上一关的知识问题，答对即可获得洗牌道具！</p>
+                    <p id="shuffle-quiz-question"></p>
+                    <div id="shuffle-quiz-options"></div>
+                    <p id="shuffle-quiz-feedback"></p>
+                    <button id="shuffle-quiz-close-button" style="display:none;">关闭</button>
+                </div>
+            </div>
         </main>
 
         <footer>
-            <p>|浙一肝胆胰外科| 游戏仅为科普目的，不能替代专业医疗建议。</p>
+            <p>|浙一肝胆胰外科（余杭）| 游戏仅为科普目的，不能替代专业医疗建议。</p>
         </footer>
     </div>
 
     <script src="data.js"></script>
     <script src="script.js"></script>
+
+    <audio id="background-music" loop>
+        <source src="music\彭吉 - 欢乐进行曲（钢琴）.ogg" type="audio/ogg">
+        您的浏览器不支持音频播放。
+    </audio>
+    <audio id="match-sound">
+        <source src="music/match.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
 </body>
 </html>
